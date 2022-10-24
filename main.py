@@ -21,6 +21,7 @@ class Launches:
     df_table_launch_ships = None
     df_table_launch_crew = None
     df_table_launch_failures = None
+    df_table_launches = None
 
     def __init__(self):
         self.get_launches()
@@ -48,6 +49,7 @@ class Launches:
         self.df_table_launch_ships = self.create_df_table_launch_ships()
         self.df_table_launch_crew = self.create_df_table_launch_crew()
         self.df_table_launch_failures = self.create_df_table_launch_failures()
+        self.df_table_launches = self.create_df_table_launches()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -171,6 +173,14 @@ class Launches:
         cols = [cols[-1]] + cols[:-1]
         df_table_launch_failures = df_table_launch_failures[cols]
         return df_table_launch_failures
+
+    def create_df_table_launches(self):
+        df_table_launches = self.df_launches[
+            ['id', 'launch_service_id', 'static_fire_date_utc', 'static_fire_date_unix', 'net', 'window',
+             'rocket', 'success', 'details', 'launchpad', 'flight_number', 'name', 'date_utc',
+             'date_unix', 'date_local', 'date_precision', 'upcoming',
+             'auto_update', 'tbd', 'launch_library_id']]
+        return df_table_launches
 
     def load_data(self):
         pass
