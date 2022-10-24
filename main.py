@@ -15,6 +15,8 @@ class Launches:
     df_table_launch_links = None
     df_table_fairing_ships = None
     df_table_fairing_details = None
+    df_table_launch_cores = None
+    df_table_payloads = None
 
     def __init__(self):
         self.get_launches()
@@ -36,6 +38,8 @@ class Launches:
         self.df_table_launch_links = self.create_df_table_launch_links()
         self.df_table_fairing_ships = self.create_df_table_fairing_ships()
         self.df_table_fairing_details = self.create_df_table_fairing_details()
+        self.df_table_launch_cores = self.create_df_table_launch_cores()
+        self.df_table_payloads = self.create_df_table_payloads()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -93,6 +97,28 @@ class Launches:
         cols = [cols[-1]] + cols[:-1]
         df_table_fairing_details = df_table_fairing_details[cols]
         return df_table_fairing_details
+
+    def create_df_table_launch_cores(self):
+        df_table_launch_cores = self.df_launches[['id', 'cores']]
+        df_table_launch_cores = df_table_launch_cores.rename(columns={'id': 'launch_id'})
+        df_table_launch_cores = df_table_launch_cores.explode('cores', ignore_index=True)
+        df_table_launch_cores = pd.concat([df_table_launch_cores.drop(['cores'], axis=1),
+                                           pd.json_normalize(df_table_launch_cores['cores'])], axis=1)
+        df_table_launch_cores = df_table_launch_cores.dropna(subset=['core'])
+        df_table_launch_cores['id'] = list(range(1, len(df_table_launch_cores['launch_id']) + 1))
+        cols = list(df_table_launch_cores.columns)
+        cols = [cols[-1]] + cols[:-1]
+        df_table_launch_cores = df_table_launch_cores[cols]
+        return df_table_launch_cores
+
+    def create_df_table_payloads(self):
+        df_table_payloads = self.df_launches[['id', 'payloads']]
+        df_table_payloads = df_table_payloads.rename(columns={'id': 'launch_id', 'payloads': 'payload'})
+        df_table_payloads = df_table_payloads.explode('payload', ignore_index=True)
+        df_table_payloads = df_table_payloads.dropna(subset=['payload'])
+        df_table_payloads['id'] = list(range(1, len(df_table_payloads['launch_id']) + 1))
+        df_table_payloads = df_table_payloads[['id', 'launch_id', 'payload']]
+        return df_table_payloads
 
 
     def load_data(self):
