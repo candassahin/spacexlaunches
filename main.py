@@ -19,6 +19,7 @@ class Launches:
     df_table_launch_payloads = None
     df_table_launch_capsules = None
     df_table_launch_ships = None
+    df_table_launch_crew = None
 
     def __init__(self):
         self.get_launches()
@@ -44,6 +45,7 @@ class Launches:
         self.df_table_launch_payloads = self.create_df_table_launch_payloads()
         self.df_table_launch_capsules = self.create_df_table_launch_capsules()
         self.df_table_launch_ships = self.create_df_table_launch_ships()
+        self.df_table_launch_crew = self.create_df_table_launch_crew()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -142,6 +144,19 @@ class Launches:
         df_table_launch_ships = df_table_launch_ships[['id', 'launch_id', 'ship']]
         return df_table_launch_ships
 
+    def create_df_table_launch_crew(self):
+        df_table_launch_crew = self.df_launches[['id','crew']]
+        df_table_launch_crew = df_table_launch_crew.rename(columns={'id': 'launch_id'})
+        df_table_launch_crew = df_table_launch_crew.explode('crew', ignore_index=True)
+        df_table_launch_crew = pd.concat([df_table_launch_crew.drop(['crew'], axis=1),
+                                           pd.json_normalize(df_table_launch_crew['crew'])], axis=1)
+        df_table_launch_crew = df_table_launch_crew.dropna(subset=['crew'])
+        df_table_launch_crew['id'] = list(range(1, len(df_table_launch_crew['launch_id']) + 1))
+        cols = list(df_table_launch_crew.columns)
+        cols = [cols[-1]] + cols[:-1]
+        df_table_launch_crew = df_table_launch_crew[cols]
+        return df_table_launch_crew
+
     def load_data(self):
         pass
 
@@ -150,3 +165,6 @@ if __name__ == '__main__':
     launches = Launches()
     data = launches.list_of_launches
     print('X')
+
+
+
