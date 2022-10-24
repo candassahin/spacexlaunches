@@ -13,6 +13,7 @@ class Launches:
     df_launches = None
     df_table_flickr_links = None
     df_table_launch_links = None
+    df_table_fairing_ships = None
 
     def __init__(self):
         self.get_launches()
@@ -32,6 +33,7 @@ class Launches:
         self.df_launches['id'] = list(range(1, len(self.df_launches['launch_service_id']) + 1))
         self.df_table_flickr_links = self.create_df_table_flickr_links()
         self.df_table_launch_links = self.create_df_table_launch_links()
+        self.df_table_fairing_ships = self.create_df_table_fairing_ships()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -67,6 +69,15 @@ class Launches:
         cols = [cols[-1]] + cols[:-1]
         df_table_launch_links = df_table_launch_links[cols]
         return df_table_launch_links
+
+    def create_df_table_fairing_ships(self):
+        df_table_fairing_ships = self.df_launches[['id', 'fairings.ships']]
+        df_table_fairing_ships = df_table_fairing_ships.explode('fairings.ships')
+        df_table_fairing_ships = df_table_fairing_ships.rename(columns={'id': 'launch_id', 'fairings.ships': 'ship'})
+        df_table_fairing_ships = df_table_fairing_ships.dropna(subset=['ship'])
+        df_table_fairing_ships['id'] = list(range(1, len(df_table_fairing_ships['launch_id']) + 1))
+        df_table_fairing_ships = df_table_fairing_ships[['id', 'launch_id', 'ship']]
+        return df_table_fairing_ships
 
     def load_data(self):
         pass
