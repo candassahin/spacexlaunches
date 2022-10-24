@@ -188,5 +188,4 @@ class Launches:
 
 if __name__ == '__main__':
     launches = Launches()
-    data = launches.list_of_launches
     print('X')
