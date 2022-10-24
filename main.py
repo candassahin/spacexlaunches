@@ -14,6 +14,7 @@ class Launches:
     df_table_flickr_links = None
     df_table_launch_links = None
     df_table_fairing_ships = None
+    df_table_fairing_details = None
 
     def __init__(self):
         self.get_launches()
@@ -34,6 +35,7 @@ class Launches:
         self.df_table_flickr_links = self.create_df_table_flickr_links()
         self.df_table_launch_links = self.create_df_table_launch_links()
         self.df_table_fairing_ships = self.create_df_table_fairing_ships()
+        self.df_table_fairing_details = self.create_df_table_fairing_details()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -78,6 +80,20 @@ class Launches:
         df_table_fairing_ships['id'] = list(range(1, len(df_table_fairing_ships['launch_id']) + 1))
         df_table_fairing_ships = df_table_fairing_ships[['id', 'launch_id', 'ship']]
         return df_table_fairing_ships
+
+    def create_df_table_fairing_details(self):
+        df_table_fairing_details = self.df_launches[
+            ['id', 'fairings.reused', 'fairings.recovery_attempt', 'fairings.recovered']]
+        df_table_fairing_details = df_table_fairing_details.rename(
+            columns={'id': 'launch_id', 'fairings.reused': 'reused', 'fairings.recovery_attempt': 'recovery_attempt',
+                     'fairings.recovered': 'recovered'})
+        df_table_fairing_details = df_table_fairing_details.dropna(subset=['reused', 'recovery_attempt', 'recovered'])
+        df_table_fairing_details['id'] = list(range(1, len(df_table_fairing_details['launch_id']) + 1))
+        cols = list(df_table_fairing_details.columns)
+        cols = [cols[-1]] + cols[:-1]
+        df_table_fairing_details = df_table_fairing_details[cols]
+        return df_table_fairing_details
+
 
     def load_data(self):
         pass
