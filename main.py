@@ -12,6 +12,7 @@ class Launches:
     list_of_launches = None
     df_launches = None
     df_table_flickr_links = None
+    df_table_launch_links = None
 
     def __init__(self):
         self.get_launches()
@@ -30,6 +31,7 @@ class Launches:
         self.df_launches = self.df_launches.sort_values(by=['launch_service_id'])
         self.df_launches['id'] = list(range(1, len(self.df_launches['launch_service_id']) + 1))
         self.df_table_flickr_links = self.create_df_table_flickr_links()
+        self.df_table_launch_links = self.create_df_table_launch_links()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -42,6 +44,29 @@ class Launches:
         df_table_flickr_links['id'] = list(range(1, len(df_table_flickr_links['link']) + 1))
         df_table_flickr_links = df_table_flickr_links[['id', 'launch_id', 'link', 'type']]
         return df_table_flickr_links
+
+    def create_df_table_launch_links(self):
+        df_table_launch_links = self.df_launches[
+            ['id', 'links.patch.small', 'links.patch.large', 'links.reddit.campaign', 'links.reddit.launch',
+             'links.reddit.media', 'links.reddit.recovery',
+             'links.presskit', 'links.webcast', 'links.youtube_id', 'links.article', 'links.wikipedia']]
+        df_table_launch_links = df_table_launch_links.rename(columns={'id': 'launch_id',
+                                                                      'links.patch.small': 'small_patch',
+                                                                      'links.patch.large': 'large_patch',
+                                                                      'links.reddit.campaign': 'reddit_campaign',
+                                                                      'links.reddit.launch': 'reddit_launch',
+                                                                      'links.reddit.media': 'reddit_media',
+                                                                      'links.reddit.recovery': 'reddit_recovery',
+                                                                      'links.presskit': 'presskit',
+                                                                      'links.webcast': 'webcast',
+                                                                      'links.youtube_id': 'youtube_id',
+                                                                      'links.article': 'article',
+                                                                      'links.wikipedia': 'wikipedia'})
+        df_table_launch_links['id'] = list(range(1, len(df_table_launch_links['launch_id']) + 1))
+        cols = list(df_table_launch_links.columns)
+        cols = [cols[-1]] + cols[:-1]
+        df_table_launch_links = df_table_launch_links[cols]
+        return df_table_launch_links
 
     def load_data(self):
         pass
