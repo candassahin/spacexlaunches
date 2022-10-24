@@ -182,9 +182,6 @@ class Launches:
              'auto_update', 'tbd', 'launch_library_id']]
         return df_table_launches
 
-    def load_data(self):
-        pass
-
 
 if __name__ == '__main__':
     launches = Launches()
