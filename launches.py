@@ -180,6 +180,12 @@ class Launches:
              'rocket', 'success', 'details', 'launchpad', 'flight_number', 'name', 'date_utc',
              'date_unix', 'date_local', 'date_precision', 'upcoming',
              'auto_update', 'tbd', 'launch_library_id']]
+        df_table_launches['static_fire_date_utc'] = df_table_launches['static_fire_date_utc'].str[:10]
+        df_table_launches['date_utc'] = df_table_launches['date_utc'].str[:10]
+        df_table_launches['date_local'] = df_table_launches['date_local'].str[:10]
+        df_table_launches['static_fire_date_utc'] = pd.to_datetime(df_table_launches['static_fire_date_utc'])
+        df_table_launches['date_utc'] = pd.to_datetime(df_table_launches['date_utc'])
+        df_table_launches['date_local'] = pd.to_datetime(df_table_launches['date_local'])
         return df_table_launches
 
 
