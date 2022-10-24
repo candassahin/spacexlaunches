@@ -16,7 +16,9 @@ class Launches:
     df_table_fairing_ships = None
     df_table_fairing_details = None
     df_table_launch_cores = None
-    df_table_payloads = None
+    df_table_launch_payloads = None
+    df_table_launch_capsules = None
+    df_table_launch_ships = None
 
     def __init__(self):
         self.get_launches()
@@ -39,7 +41,9 @@ class Launches:
         self.df_table_fairing_ships = self.create_df_table_fairing_ships()
         self.df_table_fairing_details = self.create_df_table_fairing_details()
         self.df_table_launch_cores = self.create_df_table_launch_cores()
-        self.df_table_payloads = self.create_df_table_payloads()
+        self.df_table_launch_payloads = self.create_df_table_launch_payloads()
+        self.df_table_launch_capsules = self.create_df_table_launch_capsules()
+        self.df_table_launch_ships = self.create_df_table_launch_ships()
 
     def create_df_table_flickr_links(self):
         df_table_flickr_links = self.df_launches[['id', 'links.flickr.small', 'links.flickr.original']]
@@ -111,15 +115,32 @@ class Launches:
         df_table_launch_cores = df_table_launch_cores[cols]
         return df_table_launch_cores
 
-    def create_df_table_payloads(self):
-        df_table_payloads = self.df_launches[['id', 'payloads']]
-        df_table_payloads = df_table_payloads.rename(columns={'id': 'launch_id', 'payloads': 'payload'})
-        df_table_payloads = df_table_payloads.explode('payload', ignore_index=True)
-        df_table_payloads = df_table_payloads.dropna(subset=['payload'])
-        df_table_payloads['id'] = list(range(1, len(df_table_payloads['launch_id']) + 1))
-        df_table_payloads = df_table_payloads[['id', 'launch_id', 'payload']]
-        return df_table_payloads
+    def create_df_table_launch_payloads(self):
+        df_table_launch_payloads = self.df_launches[['id', 'payloads']]
+        df_table_launch_payloads = df_table_launch_payloads.rename(columns={'id': 'launch_id', 'payloads': 'payload'})
+        df_table_launch_payloads = df_table_launch_payloads.explode('payload', ignore_index=True)
+        df_table_launch_payloads = df_table_launch_payloads.dropna(subset=['payload'])
+        df_table_launch_payloads['id'] = list(range(1, len(df_table_launch_payloads['launch_id']) + 1))
+        df_table_launch_payloads = df_table_launch_payloads[['id', 'launch_id', 'payload']]
+        return df_table_launch_payloads
 
+    def create_df_table_launch_capsules(self):
+        df_table_launch_capsules = self.df_launches[['id', 'capsules']]
+        df_table_launch_capsules = df_table_launch_capsules.rename(columns={'id': 'launch_id', 'capsules': 'capsule'})
+        df_table_launch_capsules = df_table_launch_capsules.explode('capsule', ignore_index=True)
+        df_table_launch_capsules = df_table_launch_capsules.dropna(subset=['capsule'])
+        df_table_launch_capsules['id'] = list(range(1, len(df_table_launch_capsules['launch_id']) + 1))
+        df_table_launch_capsules = df_table_launch_capsules[['id', 'launch_id', 'capsule']]
+        return df_table_launch_capsules
+
+    def create_df_table_launch_ships(self):
+        df_table_launch_ships = self.df_launches[['id', 'ships']]
+        df_table_launch_ships = df_table_launch_ships.rename(columns={'id': 'launch_id', 'ships': 'ship'})
+        df_table_launch_ships = df_table_launch_ships.explode('ship', ignore_index=True)
+        df_table_launch_ships = df_table_launch_ships.dropna(subset=['ship'])
+        df_table_launch_ships['id'] = list(range(1, len(df_table_launch_ships['launch_id']) + 1))
+        df_table_launch_ships = df_table_launch_ships[['id', 'launch_id', 'ship']]
+        return df_table_launch_ships
 
     def load_data(self):
         pass
