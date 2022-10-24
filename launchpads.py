@@ -50,6 +50,9 @@ class LaunchPads:
             ['id', 'launchpad_service_id', 'name', 'full_name', 'locality', 'region', 'latitude', 'longitude',
              'launch_attempts', 'launch_successes', 'timezone', 'status',
              'details', 'images.large']]
+        df_table_launchpads = df_table_launchpads.rename(
+            columns={'images.large': 'image'})
+        df_table_launchpads['image'] = [i[0] for i in df_table_launchpads['image']]
         return df_table_launchpads
 
 
